@@ -73,6 +73,7 @@ var newCmd = &cobra.Command{
 		projName := args[0]
 		projFolder := filepath.Join(location, projName)
 		if _, err := os.Stat(projFolder); !errors.Is(err, os.ErrNotExist) {
+			fmt.Println(projFolder)
 			fmt.Fprintf(os.Stderr, "%s already exist\n", projName)
 			os.Exit(1)
 		}
@@ -190,7 +191,9 @@ func getUserInfo() (*userInfo, error) {
 
 func projectLocation() (string, error) {
 	if path, set := os.LookupEnv("GO_INIT_PATH"); set {
-		return path, nil
+		if path != "" {
+			return path, nil
+		}
 	}
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
