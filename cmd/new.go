@@ -12,27 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const license = `The MIT License (MIT)
-
-Copyright (c) %d %s <%s>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.`
+var license = "MIT"
 
 const readme = `# %s
 
@@ -56,8 +36,7 @@ TODO: Write usage instructions here
 `
 
 type userInfo struct {
-	name  string
-	email string
+	name string
 }
 
 var newCmd = &cobra.Command{
@@ -157,7 +136,12 @@ func generateReadme(path string, ui *userInfo) error {
 
 func generateLicense(path string, ui *userInfo) error {
 	filename := filepath.Join(path, "LICENSE")
-	err := os.WriteFile(filename, []byte(fmt.Sprintf(license, time.Now().Year(), ui.name, ui.email)), 0666)
+	licenseFilename := filepath.Join("license-templates", fmt.Sprintf("%s.txt", strings.ToLower(license)))
+	file, err := licenses.ReadFile(licenseFilename)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(filename, []byte(fmt.Sprintf(string(file), time.Now().Year(), ui.name)), 0666)
 	if err != nil {
 		return err
 	}
@@ -184,13 +168,8 @@ func getUserInfo() (*userInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	email, err := exec.Command("git", "config", "user.email").Output()
-	if err != nil {
-		return nil, err
-	}
 	ui := &userInfo{
-		name:  strings.TrimSpace(string(name)),
-		email: strings.TrimSpace(string(email)),
+		name: strings.TrimSpace(string(name)),
 	}
 	return ui, nil
 }
