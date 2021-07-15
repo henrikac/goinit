@@ -9,6 +9,14 @@ A new project contains:
 + `LICENSE` (MIT)
 + `.gitignore`
 
+## Installation
+
+Run `go get github.com/henrikac/goinit` to install goinit.  
+
+After goinit has been installed it is recommended to set `GO_INIT_PATH`. This will tell goinit where it should generate new projects.
+
+An example could be `export GO_INIT_PATH=$HOME/go/src/github.com/your-github-user`
+
 ## Usage
 
 #### Generate a new project
@@ -16,7 +24,7 @@ A new project contains:
 New projects will be generated in `GO_INIT_PATH` if non-empty, otherwise in `GOPATH`.
 If both `GO_INIT_PATH` and `GOPATH` are empty a default path is used `user-home-dir/go` (e.g. `$HOME/go` on Unix).
 
-`goinit new <project name>`
+Run `goinit new <project name>` to create a new project.
 
 ## Contributing
 
