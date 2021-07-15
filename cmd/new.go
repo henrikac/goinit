@@ -82,6 +82,7 @@ var newCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "%s\n", err)
 			os.Exit(1)
 		}
+		fmt.Printf("Successfully created %s\n", projName)
 	},
 }
 
@@ -130,6 +131,7 @@ func goModInit() error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Initialized new Go module")
 	return nil
 }
 
@@ -138,6 +140,7 @@ func gitInit() error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Initialized empty Git repository")
 	return nil
 }
 
@@ -148,6 +151,7 @@ func generateReadme(path string, ui *userInfo) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Created %s\n", filename)
 	return nil
 }
 
@@ -157,6 +161,7 @@ func generateLicense(path string, ui *userInfo) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Created %s\n", filename)
 	return nil
 }
 
@@ -166,6 +171,7 @@ func generateGitignore(path string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("Created %s\n", filename)
 	return nil
 }
 
