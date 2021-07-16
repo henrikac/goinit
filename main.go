@@ -1,7 +1,13 @@
 package main
 
-import "github.com/henrikac/goinit/cmd"
+import (
+	"os"
+
+	"github.com/henrikac/goinit/cmd"
+)
 
 func main() {
-	cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		os.Exit(1)
+	}
 }

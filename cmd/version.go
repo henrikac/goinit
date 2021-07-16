@@ -6,12 +6,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print the version of goinit",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("v0.1.0")
-	},
+var versionCmd = NewVersionCmd()
+
+// NewVersionCmd initializes a new version command.
+func NewVersionCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "version",
+		Short: "Print the version of goinit",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("v0.1.0")
+		},
+	}
 }
 
 func init() {

@@ -39,40 +39,40 @@ type userInfo struct {
 	name string
 }
 
-var newCmd = &cobra.Command{
-	Use:   "new [project name]",
-	Short: "Create a new Go project",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
-		location, err := projectLocation()
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		projName := args[0]
-		projFolder := filepath.Join(location, projName)
-		if _, err := os.Stat(projFolder); !errors.Is(err, os.ErrNotExist) {
-			fmt.Println(projFolder)
-			fmt.Fprintf(os.Stderr, "%s already exist\n", projName)
-			os.Exit(1)
-		}
-		validLicense := isValidLicense()
-		if !validLicense {
-			fmt.Fprintf(os.Stderr, "unknown license: %s\n", strings.ToLower(license))
-			fmt.Println("try: goinit licenses list")
-			os.Exit(1)
-		}
-		err = generateProject(projFolder)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err)
-			os.Exit(1)
-		}
-		fmt.Printf("Successfully created %s\n", projName)
-	},
+var newCmd = NewNewCmd()
+
+func NewNewCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "new [project name]",
+		Short: "Create a new Go project",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			location, err := projectLocation()
+			if err != nil {
+				return err
+			}
+			projName := args[0]
+			projFolder := filepath.Join(location, projName)
+			if _, err := os.Stat(projFolder); !errors.Is(err, os.ErrNotExist) {
+				return errors.New(fmt.Sprintf("%s already exist\n", projName))
+			}
+			validLicense := isValidLicense()
+			if !validLicense {
+				return errors.New(fmt.Sprintf("unknown license: %s\n", strings.ToLower(license)))
+			}
+			err = generateProject(projFolder)
+			if err != nil {
+				return errors.New(fmt.Sprintf("%s\n", err))
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "Successfully created %s\n", projName)
+			return nil
+		},
+	}
+	cmd.Flags().StringVarP(&license, "license", "l", "MIT", "Which license to add to project")
+	return cmd
 }
 
 func init() {
-	newCmd.Flags().StringVarP(&license, "license", "l", "MIT", "Which license to add to project")
 	rootCmd.AddCommand(newCmd)
 }
 
