@@ -56,6 +56,12 @@ var newCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "%s already exist\n", projName)
 			os.Exit(1)
 		}
+		validLicense := isValidLicense()
+		if !validLicense {
+			fmt.Fprintf(os.Stderr, "unknown license: %s\n", strings.ToLower(license))
+			fmt.Println("try: goinit licenses list")
+			os.Exit(1)
+		}
 		err = generateProject(projFolder)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s\n", err)
@@ -66,7 +72,20 @@ var newCmd = &cobra.Command{
 }
 
 func init() {
+	newCmd.Flags().StringVarP(&license, "license", "l", "MIT", "Which license to add to project")
 	rootCmd.AddCommand(newCmd)
+}
+
+func isValidLicense() bool {
+	if license == "" {
+		return true
+	}
+	filename := filepath.Join("license-templates", fmt.Sprintf("%s.txt", strings.ToLower(license)))
+	_, err := licenses.ReadFile(filename)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 func generateProject(name string) error {
@@ -82,9 +101,11 @@ func generateProject(name string) error {
 	if err != nil {
 		return err
 	}
-	err = generateLicense(name, ui)
-	if err != nil {
-		return err
+	if license != "" {
+		err = generateLicense(name, ui)
+		if err != nil {
+			return err
+		}
 	}
 	err = generateGitignore(name)
 	if err != nil {
