@@ -46,7 +46,7 @@ var licensesReadCmd = &cobra.Command{
 		file, err := licenses.ReadFile(filename)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "unknown license: %s\n", strings.ToLower(args[0]))
-			fmt.Println("try: goinit license list")
+			fmt.Println("try: goinit licenses list")
 			os.Exit(1)
 		}
 		if bytes.Contains(file, []byte("%s")) {
