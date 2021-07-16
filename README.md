@@ -6,7 +6,7 @@ A new project contains:
 + `.git`
 + `go.mod`
 + `README.md`
-+ `LICENSE` (MIT)
++ `LICENSE` (default: MIT)
 + `.gitignore`
 
 ## Installation
@@ -24,7 +24,23 @@ An example could be `export GO_INIT_PATH=$HOME/go/src/github.com/your-github-use
 New projects will be generated in `GO_INIT_PATH` if non-empty, otherwise in `GOPATH`.
 If both `GO_INIT_PATH` and `GOPATH` are empty a default path is used `user-home-dir/go` (e.g. `$HOME/go` on Unix).
 
-Run `goinit new <project name>` to create a new project.
+Run:
++ `goinit new <project name>` to create a new project.
++ `goinit new <project name> -l bsd2` to create a new project with a bsd2 license. Use `-l ""` if you don't want a license in your project.
+
+#### List and read available licenses
+
+To list all available licenses run `goinit licenses list`.
+
+Currently available licenses:
++ Apache
++ BSD2
++ BSD3
++ GPL2
++ GPL3
++ MIT (default)
+	
+To read a license run `goinit licenses read <license name>`.
 
 ## Contributing
 
