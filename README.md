@@ -11,7 +11,7 @@ A new project contains:
 
 ## Installation
 
-Run `go get github.com/henrikac/goinit` to install goinit.  
+Run `go get github.com/henrikac/goinit` to install goinit. (*Note:* from v1.17+ use `go install` instead)  
 
 After goinit has been installed it is recommended to set `GO_INIT_PATH`. This will tell goinit where it should generate new projects.
 
