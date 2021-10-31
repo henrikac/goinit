@@ -81,7 +81,7 @@ func isValidLicense() bool {
 		return true
 	}
 	filename := filepath.Join("license-templates", fmt.Sprintf("%s.txt", strings.ToLower(license)))
-	_, err := licenses.ReadFile(filename)
+	_, err := licenses.ReadFile(filepath.ToSlash(filename))
 	if err != nil {
 		return false
 	}
@@ -158,7 +158,7 @@ func generateReadme(path string, ui *userInfo) error {
 func generateLicense(path string, ui *userInfo) error {
 	filename := filepath.Join(path, "LICENSE")
 	licenseFilename := filepath.Join("license-templates", fmt.Sprintf("%s.txt", strings.ToLower(license)))
-	file, err := licenses.ReadFile(licenseFilename)
+	file, err := licenses.ReadFile(filepath.ToSlash(licenseFilename))
 	if err != nil {
 		return err
 	}

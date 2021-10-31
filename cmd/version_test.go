@@ -6,7 +6,7 @@ import (
 	"github.com/henrikac/goinit/cmd"
 )
 
-func ExampleVersion() {
+func ExampleNewVersionCmd() {
 	root := cmd.NewRootCmd()
 	version := cmd.NewVersionCmd()
 	root.AddCommand(version)
