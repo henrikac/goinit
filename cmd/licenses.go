@@ -57,7 +57,7 @@ func NewLicensesReadCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			filename := filepath.Join("license-templates", fmt.Sprintf("%s.txt", strings.ToLower(args[0])))
-			file, err := licenses.ReadFile(filename)
+			file, err := licenses.ReadFile(filepath.ToSlash(filename))
 			if err != nil {
 				errMsg := fmt.Sprintf("unknown license: \"%s\"\n", strings.ToLower(args[0]))
 				return errors.New(errMsg)
