@@ -41,6 +41,7 @@ type userInfo struct {
 
 var newCmd = NewNewCmd()
 
+// NewNewCmd initializes a new new command.
 func NewNewCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "new [project name]",
@@ -54,15 +55,15 @@ func NewNewCmd() *cobra.Command {
 			projName := args[0]
 			projFolder := filepath.Join(location, projName)
 			if _, err := os.Stat(projFolder); !errors.Is(err, os.ErrNotExist) {
-				return errors.New(fmt.Sprintf("%s already exist\n", projName))
+				return fmt.Errorf("%s already exist", projName)
 			}
 			validLicense := isValidLicense()
 			if !validLicense {
-				return errors.New(fmt.Sprintf("unknown license: %s\n", strings.ToLower(license)))
+				return fmt.Errorf("unknown license: %s", strings.ToLower(license))
 			}
 			err = generateProject(projFolder)
 			if err != nil {
-				return errors.New(fmt.Sprintf("%s\n", err))
+				return fmt.Errorf("%s", err)
 			}
 			fmt.Fprintf(cmd.OutOrStdout(), "Successfully created %s\n", projName)
 			return nil

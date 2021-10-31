@@ -39,7 +39,7 @@ func NewLicensesListCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			names, err := getLicenseNames()
 			if err != nil {
-				return errors.New("unable to read licenses\n")
+				return errors.New("unable to read licenses")
 			}
 			for _, name := range names {
 				fmt.Fprintln(cmd.OutOrStdout(), name)
