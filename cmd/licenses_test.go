@@ -9,7 +9,7 @@ import (
 	"github.com/henrikac/goinit/cmd"
 )
 
-func ExampleLicensesList() {
+func ExampleNewLicensesListCmd() {
 	root := cmd.NewRootCmd()
 	licenses := cmd.NewLicensesCmd()
 	list := cmd.NewLicensesListCmd()
@@ -63,7 +63,7 @@ func TestLicensesRead(t *testing.T) {
 		trimBuff := strings.TrimLeft(buff.String(), " ")
 
 		if !strings.HasPrefix(trimBuff, test.ExpectedTitle) {
-			t.Errorf("Expected: %s\n", test.ExpectedTitle)
+			t.Errorf("Expected: %s\nGot: %s\n", test.ExpectedTitle, trimBuff)
 		}
 	}
 }
