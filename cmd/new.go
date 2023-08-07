@@ -12,7 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var license = "MIT"
+var (
+	license  = "MIT"
+	projPath = ""
+)
 
 const readme = `# %s
 
@@ -44,16 +47,23 @@ var newCmd = NewNewCmd()
 // NewNewCmd initializes a new new command.
 func NewNewCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "new [project name]",
+		Use:   "new [project name] [module path]",
 		Short: "Create a new Go project",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			location, err := projectLocation()
-			if err != nil {
-				return err
+			var err error
+			if projPath == "" {
+				projPath, err = projectLocation()
+				if err != nil {
+					return err
+				}
 			}
 			projName := args[0]
-			projFolder := filepath.Join(location, projName)
+			modulePath := ""
+			if len(args) == 2 {
+				modulePath = args[1]
+			}
+			projFolder := filepath.Join(projPath, projName)
 			if _, err := os.Stat(projFolder); !errors.Is(err, os.ErrNotExist) {
 				return fmt.Errorf("%s already exist", projName)
 			}
@@ -61,8 +71,9 @@ func NewNewCmd() *cobra.Command {
 			if !validLicense {
 				return fmt.Errorf("unknown license: %s", strings.ToLower(license))
 			}
-			err = generateProject(projFolder)
+			err = generateProject(projFolder, modulePath)
 			if err != nil {
+				os.RemoveAll(projFolder)
 				return fmt.Errorf("%s", err)
 			}
 			fmt.Fprintf(cmd.OutOrStdout(), "Successfully created %s\n", projName)
@@ -70,6 +81,7 @@ func NewNewCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVarP(&license, "license", "l", "MIT", "Which license to add to project")
+	cmd.Flags().StringVarP(&projPath, "path", "p", "", "The path to where the project should be created")
 	return cmd
 }
 
@@ -89,7 +101,7 @@ func isValidLicense() bool {
 	return true
 }
 
-func generateProject(name string) error {
+func generateProject(name string, modulePath string) error {
 	err := os.Mkdir(name, 0777)
 	if err != nil {
 		return err
@@ -120,15 +132,20 @@ func generateProject(name string) error {
 	if err != nil {
 		return err
 	}
-	err = goModInit()
+	err = goModInit(modulePath)
 	if err != nil {
+		fmt.Println("Please provide [module path] when creating a project outside GOPATH")
 		return err
 	}
 	return nil
 }
 
-func goModInit() error {
-	err := exec.Command("go", "mod", "init").Run()
+func goModInit(modulePath string) error {
+	cmdArgs := []string{"mod", "init"}
+	if modulePath != "" {
+		cmdArgs = append(cmdArgs, modulePath)
+	}
+	err := exec.Command("go", cmdArgs...).Run()
 	if err != nil {
 		return err
 	}
@@ -208,9 +225,9 @@ func projectLocation() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		filename := filepath.Join(home, "go")
+		filename := filepath.Join(home, "go", "src")
 		if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
-			err := os.Mkdir(filename, 0777)
+			err := os.MkdirAll(filename, 0777)
 			if err != nil {
 				return "", err
 			}
