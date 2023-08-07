@@ -134,7 +134,7 @@ func generateProject(name string, modulePath string) error {
 	}
 	err = goModInit(modulePath)
 	if err != nil {
-		fmt.Println("Please provide [module path] when creating a project outside GOPATH")
+		fmt.Println("Please provide a [module path]")
 		return err
 	}
 	return nil
