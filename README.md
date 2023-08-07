@@ -22,11 +22,17 @@ An example could be `export GO_INIT_PATH=$HOME/go/src/github.com/your-github-use
 #### Generate a new project
 
 New projects will be generated in `GO_INIT_PATH` if non-empty, otherwise in `GOPATH`.
-If both `GO_INIT_PATH` and `GOPATH` are empty a default path is used `user-home-dir/go` (e.g. `$HOME/go` on Unix).
+If both `GO_INIT_PATH` and `GOPATH` are empty a default path is used `user-home-dir/go/src` (e.g. `$HOME/go/src` on Unix).
 
 Run:
-+ `goinit new <project name>` to create a new project.
++ `goinit new <project name>` to create a new project *(see note below)*.
++ `goinit new <project name> <module path>` to create a new project.
++ `goinit new <project name> <module path> -p path/to/new/project` to create a new project at the specified path.
 + `goinit new <project name> -l bsd2` to create a new project with a bsd2 license. Use `-l ""` if you don't want a license in your project.
+
+*NOTE:*
++ `goinit new <project name>` will only work if `GO_INIT_PATH` is set to e.g. `$GOPATH/src/github.com/your-github-user`.
+If not setup like this use `goinit new <project name> <module path>` instead.
 
 #### List and read available licenses
 
